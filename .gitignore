@@ -1,0 +1,5 @@
+backups/
+!backups/.keep
+.lsp-session*
+elpa/
+auto-save-list/
