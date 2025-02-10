@@ -3,3 +3,6 @@ backups/
 .lsp-session*
 elpa/
 auto-save-list/
+*.private.el
+private/
+.cache/
