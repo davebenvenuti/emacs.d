@@ -79,6 +79,7 @@
 (menu-bar-mode -1)
 (global-display-line-numbers-mode t)
 (setq-default indent-tabs-mode nil)
+(setq tab-width 2)
 (delete-selection-mode 1)
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
 (add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
