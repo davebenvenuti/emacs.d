@@ -1,6 +1,3 @@
-(menu-bar-mode -1)
-(global-display-line-numbers-mode t)
-
 (require 'package)
 (setq package-archives
       '(("gnu-elpa" . "https://elpa.gnu.org/packages/")
@@ -26,6 +23,7 @@
  '(warning-suppress-log-types
    '((copilot copilot-no-mode-indent)
      (copilot copilot-no-mode-indent))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -54,10 +52,6 @@
                (display-buffer-pop-up-window)
                (window-width . 60))) ;; Set the width to x columns
 
-(delete-selection-mode 1)
-
-(setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
-
 (require 'git-gutter)
 
 ;; If you enable global minor mode
@@ -79,6 +73,15 @@
           compilation-mode))
   (popper-mode +1)
   (popper-echo-mode +1))
+
+
+;; Set various modes, hooks and variables here
+(menu-bar-mode -1)
+(global-display-line-numbers-mode t)
+(setq-default indent-tabs-mode nil)
+(delete-selection-mode 1)
+(setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
+(add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
 
 (defun load-el-if-exists (relative-path)
   "Load the Emacs Lisp file FILENAME if it exists."
