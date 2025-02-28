@@ -6,3 +6,6 @@ auto-save-list/
 *.private.el
 private/
 .cache/
+*-cache/
+transient/
+projects
