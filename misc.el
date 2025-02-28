@@ -1,3 +1,5 @@
+(use-package rg)
+
 ;; Set various modes, hooks and variables here
 (menu-bar-mode -1)
 (global-display-line-numbers-mode t)
