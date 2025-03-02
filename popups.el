@@ -7,10 +7,10 @@
                (window-width . 60))) ;; Set the width to x columns
 
 (use-package popper
-  :ensure t ; or :straight t
-  :bind (("C-'"   . popper-toggle) ;; TODO doesn't work
-         ("M-'"   . popper-cycle)
-         ("C-M-'" . popper-toggle-type))
+  :straight t
+  :bind (("C-c p"   . popper-toggle) ;; TODO doesn't work
+         ("C-c o"   . popper-cycle)
+         ("C-c i" . popper-toggle-type))
   :init
   (setq popper-reference-buffers
         '("\\*Messages\\*"
