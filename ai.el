@@ -22,4 +22,8 @@
   :config
   (add-hook 'prog-mode-hook 'copilot-mode)
   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion))
+  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+  ;; https://github.com/copilot-emacs/copilot.el/issues/312
+  (add-to-list 'copilot-indentation-alist '(prog-mode . 2))
+  (add-to-list 'copilot-indentation-alist '(text-mode . 2))
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2)))
