@@ -21,8 +21,8 @@
     (when (file-exists-p full-path)
       (load full-path))))
 
-(dolist (f '("./ai" "./keys" "./git" "./lsp" "./popups" "./misc"))
-  (load (expand-file-name f user-emacs-directory)))
-
 (load-el-if-exists "./env.private.el")
 (load-el-if-exists "./init.private.el")
+
+(dolist (f '("./ai" "./keys" "./git" "./lsp" "./popups" "./misc"))
+  (load (expand-file-name f user-emacs-directory)))
