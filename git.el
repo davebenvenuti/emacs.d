@@ -4,4 +4,5 @@
   ;;(global-git-gutter-mode t)
   (global-git-gutter-mode +1))
 
-(use-package magit)
+(use-package magit
+  :straight t)

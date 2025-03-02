@@ -1,4 +1,8 @@
-(use-package rg)
+(use-package rg
+  :straight t) ;; ripgrep
+
+(use-package vterm
+  :straight t) ;; better terminal
 
 ;; Set various modes, hooks and variables here
 (menu-bar-mode -1)
