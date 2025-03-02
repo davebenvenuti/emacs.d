@@ -16,6 +16,9 @@
   (setq aidermacs-use-architect-mode t)
   (setq aidermacs-extra-args '("--no-gitignore")))
 
+;; gptel notes
+;;
+;;  - C-c <ret> sends the message in the `gptel` chat buffer
 (use-package gptel
   :straight t
   :config
