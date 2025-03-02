@@ -16,6 +16,17 @@
   (setq aidermacs-use-architect-mode t)
   (setq aidermacs-extra-args '("--no-gitignore")))
 
+(use-package gptel
+  :straight t
+  :config
+  (setq gptel-model   'deepseek-chat
+      gptel-backend
+      (gptel-make-openai "DeepSeek"     ;Any name you want
+        :host "api.deepseek.com"
+        :endpoint "/chat/completions"
+        :stream t
+        :key (getenv "DEEPSEEK_API_KEY")
+        :models '(deepseek-chat deepseek-coder))))
 
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
