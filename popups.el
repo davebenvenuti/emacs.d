@@ -6,18 +6,30 @@
                (display-buffer-pop-up-window)
                (window-width . 60))) ;; Set the width to x columns
 
-(use-package popper
+;; I used to use the `popper` package here but that wasn't super useful
+
+(use-package shackle
   :straight t
-  :bind (("C-c p"   . popper-toggle) ;; TODO doesn't work
-         ("C-c o"   . popper-cycle)
-         ("C-c i" . popper-toggle-type))
-  :init
-  (setq popper-reference-buffers
-        '("\\*Messages\\*"
-	  "\\*Warnings\\*"
-          "Output\\*$"
-          "\\*Async Shell Command\\*"
-          help-mode
-          compilation-mode))
-  (popper-mode +1)
-  (popper-echo-mode +1))
+  :config
+  ;; Enable shackle
+  (shackle-mode 1)
+
+  ;; Configure shackle rules
+  (setq shackle-rules
+    '(("*Warnings*" :popup nil)))
+
+  ;; Set a default rule for all windows optionally
+  ;; (setq shackle-default-rule '(:select nil :inhibit-window-quit t :ignore t))
+  )
+
+;; Prevent the *Warnings* buffer from being displayed
+;; (add-to-list 'display-buffer-alist
+;;              '("^\\*Warnings\\*" . (display-buffer-no-window)))
+
+(add-to-list 'display-buffer-alist
+             '("^\\*Warnings\\*"
+               (display-buffer-pop-up-window)
+               (inhibit-same-window . t)))
+
+;; Individual warning types can be suppressed, too.
+;; (setq warning-suppress-types '((some-warning-type)))
