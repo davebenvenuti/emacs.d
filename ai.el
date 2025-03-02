@@ -8,15 +8,18 @@
 (use-package aidermacs
   :straight (:host github :repo "MatthewZMD/aidermacs" :files ("*.el"))
   :config
-  (setq aidermacs-default-model "sonnet")
+  (setq aidermacs-default-model "deepseek/deepseek-chat")
+  (setq aidermacs-editor-model "deepseek/deepseek-coder")
+  (setq aidermacs-architect-model "deepseek/deepseek-coder")
   (global-set-key (kbd "C-c a") 'aidermacs-transient-menu)
-  (setq aidermacs-auto-commits 0)
-  (setq aidermacs-use-architect-mode 0))
+  (setq aidermacs-auto-commits nil)
+  (setq aidermacs-use-architect-mode t)
+  (setq aidermacs-extra-args '("--no-gitignore")))
 
-;; Also needs the following environment variables set in env.private.el:
 
-;;   AIDER_MODEL
-;;   AIDER_4O (maybe optional?)
-;;   AIDER_OPENAI_API_BASE
-;;   AIDER_OPENAI_API_KEY
-;;   AIDER_AUTO_COMMITS
+(use-package copilot
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  :config
+  (add-hook 'prog-mode-hook 'copilot-mode)
+  (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion))
