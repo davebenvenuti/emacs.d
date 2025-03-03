@@ -17,7 +17,7 @@ An optional DELIMITER can be provided, defaulting to a comma."
       gptel-backend
       (gptel-make-openai "OpenAI"     ;Any name you want
         :host (getenv "GPTEL_API_HOST")
-        :endpoint "/chat/completions"
+        :endpoint (getenv "GPTEL_API_ENDPOINT")
         :stream t
         :key (getenv "GPTEL_API_KEY")
         :models (env-var-to-list "GPTEL_MODELS"))))
