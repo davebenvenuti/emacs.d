@@ -13,7 +13,7 @@ An optional DELIMITER can be provided, defaulting to a comma."
 (use-package gptel
   :straight t
   :config
-  (setq gptel-model   'deepseek-chat
+  (setq gptel-model (intern (getenv "GPTEL_DEFAULT_MODEL"))
       gptel-backend
       (gptel-make-openai "OpenAI"     ;Any name you want
         :host (getenv "GPTEL_API_HOST")
