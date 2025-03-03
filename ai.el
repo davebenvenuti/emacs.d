@@ -1,20 +1,11 @@
-;; aider
-
-;; 1)
-;;   python -m pip install aider-install
-;;   aider-install
-;; 2) https://github.com/MatthewZMD/aidermacs
-
-(use-package aidermacs
-  :straight (:host github :repo "MatthewZMD/aidermacs" :files ("*.el"))
-  :config
-  (setq aidermacs-default-model "deepseek/deepseek-chat")
-  (setq aidermacs-editor-model "deepseek/deepseek-coder")
-  (setq aidermacs-architect-model "deepseek/deepseek-coder")
-  (global-set-key (kbd "C-c a") 'aidermacs-transient-menu)
-  (setq aidermacs-auto-commits nil)
-  (setq aidermacs-use-architect-mode t)
-  (setq aidermacs-extra-args '("--no-gitignore")))
+(defun env-var-to-list (var-name &optional delimiter)
+  "Convert a delimited environment variable specified by VAR-NAME to a list of strings.
+An optional DELIMITER can be provided, defaulting to a comma."
+  (let ((env-value (getenv var-name))
+        (delim (or delimiter ",")))
+    (when env-value
+      ;; Split the string by the specified delimiter and trim each element
+      (mapcar #'string-trim (split-string env-value delim t)))))
 
 ;; gptel notes
 ;;
@@ -24,12 +15,12 @@
   :config
   (setq gptel-model   'deepseek-chat
       gptel-backend
-      (gptel-make-openai "DeepSeek"     ;Any name you want
-        :host "api.deepseek.com"
+      (gptel-make-openai "OpenAI"     ;Any name you want
+        :host (getenv "GPTEL_API_HOST")
         :endpoint "/chat/completions"
         :stream t
-        :key (getenv "DEEPSEEK_API_KEY")
-        :models '(deepseek-chat deepseek-coder))))
+        :key (getenv "GPTEL_API_KEY")
+        :models (env-var-to-list "GPTEL_MODELS"))))
 
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
