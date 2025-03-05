@@ -10,3 +10,7 @@ private/
 transient/
 projects
 straight/
+autosaves/
+!autosaves.keep
+*.el~
+.*.el
