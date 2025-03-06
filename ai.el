@@ -20,7 +20,8 @@ An optional DELIMITER can be provided, defaulting to a comma."
         :endpoint (getenv "GPTEL_API_ENDPOINT")
         :stream t
         :key (getenv "GPTEL_API_KEY")
-        :models (env-var-to-list "GPTEL_MODELS"))))
+        :models (env-var-to-list "GPTEL_MODELS"))
+      gptel-max-tokens (string-to-number (or (getenv "GPTEL_MAX_TOKENS") "16384"))))
 
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
