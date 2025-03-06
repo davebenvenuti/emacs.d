@@ -4,6 +4,19 @@
 (use-package vterm
   :straight t) ;; better terminal
 
+(use-package minimap
+  :straight t) ;; minimap (VSCode-like overview)
+
+(defun my/display-line-numbers-except-some-modes ()
+  "Disable line numbers for specific buffers."
+  (when (or (minibufferp)
+            (string-match-p "^\\*vterm\\*" (buffer-name))
+            ;; Add more conditions here for other buffers
+            )
+    (display-line-numbers-mode -1)))
+
+(add-hook 'display-line-numbers-mode-hook 'my/display-line-numbers-except-some-modes)
+
 ;; Set various modes, hooks and variables here
 (menu-bar-mode -1)
 (xterm-mouse-mode 1)
