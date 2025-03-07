@@ -1,6 +1,7 @@
 (use-package rg
   :straight t) ;; ripgrep
 
+;; C-c C-t copy mode (navigate terminal output)
 (use-package vterm
   :straight t) ;; better terminal
 
