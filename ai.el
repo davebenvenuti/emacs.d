@@ -25,6 +25,7 @@ An optional DELIMITER can be provided, defaulting to a comma."
 
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  :ensure t
   :config
   (add-hook 'prog-mode-hook 'copilot-mode)
   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
