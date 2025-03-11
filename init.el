@@ -15,6 +15,10 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+;; Https://github.com/radian-software/straight.el/issues/1146#issuecomment-2227133737
+(setq straight-built-in-pseudo-packages '(emacs jsonrpc project flymake eglot))
+(setq straight-use-package-by-default t)
+
 (defun load-el-if-exists (relative-path)
   "Load the Emacs Lisp file FILENAME if it exists."
   (let ((full-path (expand-file-name relative-path user-emacs-directory)))
