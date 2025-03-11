@@ -1,8 +1,7 @@
 (use-package git-gutter
+  :hook (prog-mode . git-gutter-mode)
   :config
-  ;; If you enable global minor mode
-  ;;(global-git-gutter-mode t)
-  (global-git-gutter-mode +1))
+  (setq git-gutter:update-interval 0.02))
 
 (use-package magit
   :straight t)
