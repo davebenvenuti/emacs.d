@@ -11,6 +11,6 @@ transient/
 projects
 straight/
 autosaves/
-!autosaves.keep
+!autosaves/.keep
 *.el~
 .*.el
