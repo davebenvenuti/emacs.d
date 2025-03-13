@@ -19,6 +19,8 @@
 (setq straight-built-in-pseudo-packages '(emacs jsonrpc project flymake eglot))
 (setq straight-use-package-by-default t)
 
+;; Load all *.el files in ~/.emacs.d in lexographical order.  Also note that
+;; *.private.el is git ignored.
 (let ((config-files (directory-files user-emacs-directory t "^[^#].*\\.el$")))
   (setq config-files (cl-remove-if (lambda (file)
                                      (string= (file-name-nondirectory file) "init.el"))
