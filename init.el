@@ -19,14 +19,9 @@
 (setq straight-built-in-pseudo-packages '(emacs jsonrpc project flymake eglot))
 (setq straight-use-package-by-default t)
 
-(defun load-el-if-exists (relative-path)
-  "Load the Emacs Lisp file FILENAME if it exists."
-  (let ((full-path (expand-file-name relative-path user-emacs-directory)))
-    (when (file-exists-p full-path)
-      (load full-path))))
-
-(load-el-if-exists "./env.private.el")
-(load-el-if-exists "./init.private.el")
-
-(dolist (f '("./ai" "./keys" "./git" "./lsp" "./popups" "./misc"))
-  (load (expand-file-name f user-emacs-directory)))
+(let ((config-files (directory-files user-emacs-directory t "^[^#].*\\.el$")))
+  (setq config-files (cl-remove-if (lambda (file)
+                                     (string= (file-name-nondirectory file) "init.el"))
+                                   config-files))
+  (dolist (file (sort config-files #'string<))
+    (load file)))

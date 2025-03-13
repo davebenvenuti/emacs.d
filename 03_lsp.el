@@ -19,14 +19,14 @@
 (setq my-compile-commands-dir (my/find-compile-commands-dir))
 
 ;; M-? allows you to navigate references etc
-(with-eval-after-load 'eglot
-  (add-hook 'eglot-managed-mode-hook
-            (lambda ()
-              (let ((root (locate-dominating-file
-                           default-directory
-                           "compile_commands.json")))
-                (when root
-                  (setq default-directory root))))))
+;; (with-eval-after-load 'eglot
+;;   (add-hook 'eglot-managed-mode-hook
+;;             (lambda ()
+;;               (let ((root (locate-dominating-file
+;;                            default-directory
+;;                            "compile_commands.json")))
+;;                 (when root
+;;                   (setq default-directory root))))))
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp"))
