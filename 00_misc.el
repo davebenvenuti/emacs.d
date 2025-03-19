@@ -20,7 +20,8 @@
 
 ;; Set various modes, hooks and variables here
 (menu-bar-mode -1)
-(xterm-mouse-mode 1)
+(xterm-mouse-mode nil)
+(column-number-mode 1)
 (global-display-line-numbers-mode t)
 (setq-default indent-tabs-mode nil)
 (setq tab-width 2)
