@@ -19,3 +19,5 @@
 
 
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c n") 'git-gutter:next-hunk)
+(global-set-key (kbd "C-c p") 'git-gutter:previous-hunk)
