@@ -12,6 +12,8 @@ projects
 straight/
 autosaves/
 !autosaves/.keep
+locks/
+!locks/.keep
 *.el~
 .*.el
 tramp

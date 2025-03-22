@@ -30,4 +30,5 @@
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
 (setq auto-save-file-name-transforms
       `((".*" "~/.emacs.d/autosaves/" t)))
+(setq lock-file-name-transforms '((".*" "~/.emacs.d/locks/" t)))
 (setq native-comp-async-report-warnings-errors 'silent)
