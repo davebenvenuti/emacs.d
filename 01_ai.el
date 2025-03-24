@@ -15,7 +15,7 @@ An optional DELIMITER can be provided, defaulting to a comma."
   :config
   (setq gptel-model (intern (getenv "GPTEL_DEFAULT_MODEL"))
       gptel-backend
-      (gptel-make-openai "OpenAI"     ;Any name you want
+      (gptel-make-openai (or (getenv "GPTEL_NAME") "OpenAI")
         :host (getenv "GPTEL_API_HOST")
         :endpoint (getenv "GPTEL_API_ENDPOINT")
         :stream t
