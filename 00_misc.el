@@ -24,10 +24,7 @@
 ;; Set various modes, hooks and variables here
 (menu-bar-mode -1)
 (xterm-mouse-mode nil)
-<<<<<<< HEAD
 (column-number-mode 1)
-=======
->>>>>>> 960d768 (Add rust-mode, disable mouse mode by default, move tab width settings to a new file)
 (global-display-line-numbers-mode t)
 (setq-default indent-tabs-mode nil)
 
