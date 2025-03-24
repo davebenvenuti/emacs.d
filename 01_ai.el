@@ -27,11 +27,11 @@ An optional DELIMITER can be provided, defaulting to a comma."
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :ensure t
   :config
+  (setq copilot-indent-offset-warning-disable t)
   (add-hook 'prog-mode-hook 'copilot-mode)
   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
   (define-key copilot-completion-map (kbd "C-c n") 'copilot-next-completion)
   ;; https://github.com/copilot-emacs/copilot.el/issues/312
-  (add-to-list 'copilot-indentation-alist '(prog-mode . tab-width))
-  (add-to-list 'copilot-indentation-alist '(text-mode . tab-width))
-  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . tab-width)))
+  (add-to-list 'copilot-indentation-alist '(prog-mode tab-width))
+  (add-to-list 'copilot-indentation-alist '(org-mode tab-width)))
