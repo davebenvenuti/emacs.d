@@ -8,6 +8,9 @@
 (use-package minimap
   :straight t) ;; minimap (VSCode-like overview)
 
+(use-package rust-mode
+  :straight t) ;; Rust mode
+
 (defun my/display-line-numbers-except-some-modes ()
   "Disable line numbers for specific buffers."
   (when (or (minibufferp)
@@ -21,10 +24,13 @@
 ;; Set various modes, hooks and variables here
 (menu-bar-mode -1)
 (xterm-mouse-mode nil)
+<<<<<<< HEAD
 (column-number-mode 1)
+=======
+>>>>>>> 960d768 (Add rust-mode, disable mouse mode by default, move tab width settings to a new file)
 (global-display-line-numbers-mode t)
 (setq-default indent-tabs-mode nil)
-(setq tab-width 2)
+
 (delete-selection-mode 1)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
