@@ -7,21 +7,41 @@ An optional DELIMITER can be provided, defaulting to a comma."
       ;; Split the string by the specified delimiter and trim each element
       (mapcar #'string-trim (split-string env-value delim t)))))
 
+(defun env-var-set-p (var)
+  "Return non-nil if environment variable VAR is set and not empty."
+  (let ((value (getenv var)))
+    (and value (not (string-empty-p value)))))
+
+(defun my/setup-gptel ()
+  "Setup gptel for hosted deepseek"
+  (when (env-var-set-p "GPTEL_DEEPSEEK_API_KEY")
+    (setq gptel-model `deepseek-chat
+          gptel-backend (gptel-make-deepseek "DeepSeek"
+                                             :stream t
+                                             :key (getenv "GPTEL_DEEPSEEK_API_KEY")
+                                             ))))
+
 ;; gptel notes
 ;;
 ;;  - C-c <ret> sends the message in the `gptel` chat buffer
 (use-package gptel
   :straight t
   :config
-  (setq gptel-model (intern (getenv "GPTEL_DEFAULT_MODEL"))
-      gptel-backend
-      (gptel-make-openai (or (getenv "GPTEL_NAME") "OpenAI")
-        :host (getenv "GPTEL_API_HOST")
-        :endpoint (getenv "GPTEL_API_ENDPOINT")
-        :stream t
-        :key (getenv "GPTEL_API_KEY")
-        :models (env-var-to-list "GPTEL_MODELS"))
-      gptel-max-tokens (string-to-number (or (getenv "GPTEL_MAX_TOKENS") "16384"))))
+  (my/setup-gptel))
+
+;; old
+;; (use-package gptel
+;;   :straight t
+;;   :config
+;;   (setq gptel-model (intern (getenv "GPTEL_DEFAULT_MODEL"))
+;;       gptel-backend
+;;       (gptel-make-openai (or (getenv "GPTEL_NAME") "OpenAI")
+;;         :host (getenv "GPTEL_API_HOST")
+;;         :endpoint (getenv "GPTEL_API_ENDPOINT")
+;;         :stream t
+;;         :key (getenv "GPTEL_API_KEY")
+;;         :models (env-var-to-list "GPTEL_MODELS"))
+;;       gptel-max-tokens (string-to-number (or (getenv "GPTEL_MAX_TOKENS") "16384"))))
 
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
