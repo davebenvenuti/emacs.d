@@ -11,6 +11,9 @@
 (use-package rust-mode
   :straight t) ;; Rust mode
 
+(use-package bazel
+  :straight (:host github :repo "bazelbuild/emacs-bazel-mode" :files ("bazel.el"))) ;; Bazel mode
+
 (defun my/display-line-numbers-except-some-modes ()
   "Disable line numbers for specific buffers."
   (when (or (minibufferp)
