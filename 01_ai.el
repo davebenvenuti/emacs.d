@@ -15,6 +15,7 @@ An optional DELIMITER can be provided, defaulting to a comma."
 (defun my/setup-gptel ()
   "Setup gptel for hosted deepseek"
   (when (env-var-set-p "GPTEL_DEEPSEEK_API_KEY")
+    (message "[gptel] Setting up DeepSeek")
     (setq my/deepseek-api-key (getenv "GPTEL_DEEPSEEK_API_KEY"))
 
     (gptel-make-deepseek "DeepSeek Chat"
@@ -27,8 +28,22 @@ An optional DELIMITER can be provided, defaulting to a comma."
                           :host "api.deepseek.com"
                           :endpoint "/chat/completions"
                           :key my/deepseek-api-key
-                          :models (list"deepseek-coder" "deepseek-reasoner"))
-          gptel-max-tokens 8192)))
+                          :models (list "deepseek-coder" "deepseek-reasoner"))
+          gptel-max-tokens 8192))
+
+  (when (env-var-set-p "GPTEL_OPENAI_PROXY_API_KEY")
+    (message "[gptel] Setting up OpenAI Proxy")
+    (setq my/openai-api-key (getenv "GPTEL_OPENAI_PROXY_API_KEY"))
+
+    (setq gptel-model (intern (getenv "GPTEL_OPENAI_PROXY_DEFAULT_MODEL"))
+      gptel-backend
+      (gptel-make-openai "OpenAI Proxy"
+        :host (getenv "GPTEL_OPENAI_PROXY_HOST")
+        :endpoint "/v1/chat/completions"
+        :stream t
+        :key my/openai-api-key
+        :models (env-var-to-list "GPTEL_OPENAI_PROXY_MODELS"))
+      gptel-max-tokens 16384)))
 
 ;; gptel notes
 ;;
