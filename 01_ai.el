@@ -13,7 +13,7 @@ An optional DELIMITER can be provided, defaulting to a comma."
     (and value (not (string-empty-p value)))))
 
 (defun my/setup-gptel ()
-  "Setup gptel for hosted deepseek"
+  "Setup gptel for hosted deepseek or a configured OpenAI proxy."
   (when (env-var-set-p "GPTEL_DEEPSEEK_API_KEY")
     (message "[gptel] Setting up DeepSeek")
     (setq my/deepseek-api-key (getenv "GPTEL_DEEPSEEK_API_KEY"))
