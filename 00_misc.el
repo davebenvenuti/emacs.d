@@ -2,8 +2,12 @@
   :straight t) ;; ripgrep
 
 ;; C-c C-t copy mode (navigate terminal output)
-(use-package vterm
-  :straight t) ;; better terminal
+(use-package vterm ;; better terminal
+  :straight t
+  :config
+  (setq vterm-max-scrollback 10000)
+  (setq vterm-use-vterm-color t)
+  (setq vterm-kill-buffer-on-exit t))
 
 (use-package minimap
   :straight t) ;; minimap (VSCode-like overview)
@@ -14,15 +18,12 @@
 (use-package bazel
   :straight (:host github :repo "bazelbuild/emacs-bazel-mode" :files ("bazel.el"))) ;; Bazel mode
 
-(defun my/display-line-numbers-except-some-modes ()
-  "Disable line numbers for specific buffers."
-  (when (or (minibufferp)
-            (string-match-p "^\\*vterm\\*" (buffer-name))
-            ;; Add more conditions here for other buffers
-            )
-    (display-line-numbers-mode -1)))
-
-(add-hook 'display-line-numbers-mode-hook 'my/display-line-numbers-except-some-modes)
+(dolist (mode '(vterm-mode
+                term-mode
+                shell-mode
+                eshell-mode))
+  (add-hook (intern (format "%s-hook" mode))
+            (lambda () (display-line-numbers-mode 0))))
 
 ;; Set various modes, hooks and variables here
 (menu-bar-mode -1)
