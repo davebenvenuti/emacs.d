@@ -11,17 +11,19 @@
   (defun my/toggle-vterm-window ()
     "Toggle a vterm window at the bottom of the screen with height 13."
     (interactive)
-    (let ((vterm-buffer (get-buffer "*vterm*"))
-          (vterm-window (get-buffer-window "*vterm*")))
-      (if vterm-window
-          (delete-window vterm-window)
-        (progn
-          (split-window-below (- (window-height) 13))
-          (other-window 1)
-          (if vterm-buffer
-              (switch-to-buffer vterm-buffer)
-            (vterm))
-          (display-line-numbers-mode 0)))))
+    (let ((vterm-buffer-name "*vterm (lower)*"))
+      (let ((vterm-buffer (get-buffer vterm-buffer-name))
+            (vterm-window (get-buffer-window vterm-buffer-name)))
+        (if vterm-window
+            (delete-window vterm-window)
+          (progn
+            (split-window-below (- (window-height) 13))
+            (other-window 1)
+            (if vterm-buffer
+		(switch-to-buffer vterm-buffer)
+              (progn
+                (vterm vterm-buffer-name)
+                (display-line-numbers-mode 0))))))))
   (global-set-key (kbd "C-c v") 'my/toggle-vterm-window))
 
 (use-package minimap
