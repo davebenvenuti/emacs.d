@@ -39,11 +39,23 @@
   (treesit-auto-install 'prompt)
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
+  ;; Use ruby-lsp not treesitter
+  (delete 'ruby treesit-auto-langs)
+  ;; Explicitly remove ruby-ts-mode from auto-mode-alist
+  (setq auto-mode-alist (delete '("\\.rb\\'" . ruby-ts-mode) auto-mode-alist))
   (global-treesit-auto-mode))
+
+;; Make sure we use ruby-mode, not ruby-ts-mode
+(add-to-list 'auto-mode-alist '("\\.rb\\'" . ruby-mode))
 
 (use-package lsp-mode
   :bind
-  ("M-RET" . lsp-execute-code-action))
+  ("M-RET" . lsp-execute-code-action)
+  :hook
+  (ruby-mode . lsp-deferred)
+  :config
+  (setq lsp-disabled-clients '(rubocop-ls sorbet-ls semgrep-ls)))
+;; Note: there's also an lsp-enabled-clients
 
 (use-package dap-mode
   :after lsp-mode
