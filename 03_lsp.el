@@ -28,10 +28,10 @@
 ;;                 (when root
 ;;                   (setq default-directory root))))))
 
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp"))
-  (add-to-list 'eglot-server-programs
-               `(c++-mode 2. ("clangd" (concat "--compile-commands-dir=" my-compile-commands-dir) "--query-driver=/**/*"))))
+;; (with-eval-after-load 'eglot
+;;   (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp"))
+;;   (add-to-list 'eglot-server-programs
+;;                `(c++-mode 2. ("clangd" (concat "--compile-commands-dir=" my-compile-commands-dir) "--query-driver=/**/*"))))
 
 (use-package treesit-auto
   :ensure t
@@ -40,3 +40,12 @@
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
+
+(use-package lsp-mode
+  :bind
+  ("M-RET" . lsp-execute-code-action))
+
+(use-package dap-mode
+  :after lsp-mode
+  :init
+  (dap-auto-configure-mode))
