@@ -57,7 +57,4 @@
   (setq lsp-disabled-clients '(rubocop-ls sorbet-ls semgrep-ls)))
 ;; Note: there's also an lsp-enabled-clients
 
-(use-package dap-mode
-  :after lsp-mode
-  :init
-  (dap-auto-configure-mode))
+;; See also: 06_debug.el
