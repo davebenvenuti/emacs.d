@@ -74,9 +74,23 @@ An optional DELIMITER can be provided, defaulting to a comma."
   :config
   (setq copilot-indent-offset-warning-disable t)
   (add-hook 'prog-mode-hook 'copilot-mode)
+
   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
   (define-key copilot-completion-map (kbd "C-c n") 'copilot-next-completion)
+
+  (with-eval-after-load 'company
+    ;; Make TAB check for copilot completions first, then try company
+    (defun my/tab-completion ()
+      (interactive)
+      (if (copilot--overlay-visible)
+          (copilot-accept-completion)
+        (company-complete-common-or-cycle)))
+
+    ;; Replace TAB binding in appropriate modes
+    (define-key prog-mode-map (kbd "TAB") #'my/tab-completion)
+    (define-key prog-mode-map (kbd "<tab>") #'my/tab-completion))
+
   ;; https://github.com/copilot-emacs/copilot.el/issues/312
   (add-to-list 'copilot-indentation-alist '(prog-mode tab-width))
   (add-to-list 'copilot-indentation-alist '(org-mode tab-width)))
