@@ -46,7 +46,17 @@
               ("C-n" . company-select-next)
               ("C-p". company-select-previous))
   :config
-    (global-company-mode))
+  (defun my/company-maybe-disable-in-copilot-presence (command)
+    "Disable company when copilot has a completion available."
+    (when (and (eq command 'prefix)
+               (boundp 'copilot-mode)
+               copilot-mode
+               (copilot--overlay-visible))
+      (company-abort)))
+
+  (add-hook 'company-pre-command-hook #'my/company-maybe-disable-in-copilot-presence)
+
+  (global-company-mode))
 
 (dolist (mode '(vterm-mode
                 term-mode
