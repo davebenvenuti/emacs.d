@@ -35,6 +35,19 @@
 (use-package bazel
   :straight (:host github :repo "bazelbuild/emacs-bazel-mode" :files ("bazel.el"))) ;; Bazel mode
 
+(use-package company
+  :ensure t
+;;  :delight company-mode
+;;  :demand t
+  :init
+  (setq company-idle-delay 0.1
+        company-minimum-prefix-length 1)
+  :bind (:map company-active-map
+              ("C-n" . company-select-next)
+              ("C-p". company-select-previous))
+  :config
+    (global-company-mode))
+
 (dolist (mode '(vterm-mode
                 term-mode
                 shell-mode

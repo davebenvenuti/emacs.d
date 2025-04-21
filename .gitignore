@@ -17,3 +17,4 @@ locks/
 *.el~
 .*.el
 tramp
+tree-sitter/
