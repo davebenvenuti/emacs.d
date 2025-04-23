@@ -51,6 +51,7 @@
 (use-package lsp-mode
   :bind
   ("M-RET" . lsp-execute-code-action)
+  ("C-c a" . lsp-avy-lens) ;; For things like Run Test in Rails unit tests
   :hook
   (ruby-mode . lsp-deferred)
   :config
