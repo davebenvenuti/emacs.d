@@ -29,6 +29,11 @@
 (use-package minimap
   :straight t) ;; minimap (VSCode-like overview)
 
+(use-package kotlin-mode
+  :ensure t    ;; Install the package if not already installed
+  :defer t     ;; Defer loading until needed
+  :mode "\\.kt\\'")  ;; Load when opening .kt files
+
 (use-package rust-mode
   :straight t) ;; Rust mode
 
