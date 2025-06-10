@@ -32,13 +32,16 @@
 (use-package kotlin-mode
   :ensure t    ;; Install the package if not already installed
   :defer t     ;; Defer loading until needed
-  :mode "\\.kt\\'")  ;; Load when opening .kt files
+  :mode "\\.kt\\'")
 
 (use-package rust-mode
   :straight t) ;; Rust mode
 
 (use-package bazel
   :straight (:host github :repo "bazelbuild/emacs-bazel-mode" :files ("bazel.el"))) ;; Bazel mode
+
+(use-package ag
+  :straight t) ;; Silver Searcher (ag) mode
 
 (use-package company
   :ensure t
@@ -61,8 +64,30 @@
 
   (add-hook 'company-pre-command-hook #'my/company-maybe-disable-in-copilot-presence)
 
-  (global-company-mode))
+  ;; Disable company-mode in specific buffers
+  (defun my/maybe-disable-company-mode ()
+    "Disable company-mode in specific buffers."
+    (when (or (string-equal (buffer-name) "*claude*")
+              (string-equal (buffer-name) "*run test results*"))
+      (company-mode -1)))
 
+  ;; Add hook to disable company in specific buffers
+  (add-hook 'buffer-list-update-hook #'my/maybe-disable-company-mode)
+
+  ;; Alternative approach - use company-global-modes to exclude specific buffers
+  ;; (setq company-global-modes
+  ;;       '(not help-mode
+  ;;             compilation-mode
+  ;;             minibuffer-inactive-mode
+  ;;             eshell-mode
+  ;;             shell-mode
+  ;;             term-mode
+  ;;             vterm-mode
+  ;;             comint-mode
+  ;;             fundamental-mode))
+
+  (global-company-mode))
+;; Set UTF-8 as the default encoding
 (dolist (mode '(vterm-mode
                 term-mode
                 shell-mode

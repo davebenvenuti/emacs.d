@@ -1,3 +1,8 @@
+;; Set UTF-8 as the default encoding
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8)
+(prefer-coding-system 'utf-8)
+
 ;; straight.el (use-package extension)
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -16,7 +21,7 @@
   (load bootstrap-file nil 'nomessage))
 
 ;; Https://github.com/radian-software/straight.el/issues/1146#issuecomment-2227133737
-(setq straight-built-in-pseudo-packages '(emacs project xref))
+(setq straight-built-in-pseudo-packages '(emacs project xref eglot))
 (setq straight-use-package-by-default t)
 
 ;; Load all *.el files in ~/.emacs.d in lexographical order.  Also note that
