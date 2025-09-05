@@ -20,11 +20,14 @@
   ;; Optional configuration
   (setq eglot-autoshutdown t)
 
+  ;; Increase timeout for language server initialization (default is 30 seconds)
+  (setq eglot-connect-timeout 120)  ;; 2 minutes for gem installation
+
   ;; Configure code actions to show test run options
   (setq eglot-ignored-server-capabilities nil) ;; Make sure all capabilities are enabled
 
   ;; (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp"))
-  (add-to-list 'eglot-server-programs '(ruby-mode . ("bundle" "exec" "ruby-lsp"))))
+  (add-to-list 'eglot-server-programs '(ruby-mode . ("ruby-lsp"))))
 
 ;; (defun my/find-compile-commands-dir ()
 ;;   "Locate the directory containing the 'compile_commands.json' file and print it."
