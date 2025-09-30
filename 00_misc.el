@@ -99,7 +99,9 @@
 (menu-bar-mode -1)
 (xterm-mouse-mode 0)
 (column-number-mode 1)
-(global-display-line-numbers-mode t)
+;; This works better than global-display-line-numbers-mode apparently
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'text-mode-hook 'display-line-numbers-mode)
 (setq-default indent-tabs-mode nil)
 
 (delete-selection-mode 1)
