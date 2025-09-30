@@ -8,7 +8,13 @@
           (delete . "-")
           (change . "M")
           (unknown . "?")
-          (ignored . "i"))))
+          (ignored . "i")))
+  ;; Example of how to customize the color scheme for diff-hl:
+  ;; (custom-set-faces
+  ;;  '(diff-hl-insert ((t (:foreground "green" :background "green" :box t))))
+  ;;  '(diff-hl-delete ((t (:foreground "red" :background "red" :box t))))
+  ;;  '(diff-hl-change ((t (:foreground "blue" :background "blue" :box t)))))
+  )
 
 (defun my/github-permalink ()
   "Generate a permanent GitHub URL for the current file.  Copies the URL to the kill ring and returns it."
