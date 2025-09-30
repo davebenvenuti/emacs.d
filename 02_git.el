@@ -1,14 +1,17 @@
-;; (use-package git-gutter
-;;   :hook (prog-mode . git-gutter-mode)
-;;   :config
-;;   (setq git-gutter:update-interval 0.02))
-
-(use-package magit
-  :straight t)
+(use-package diff-hl
+  :hook (prog-mode . diff-hl-mode)
+  :config
+  (global-diff-hl-mode)
+  (diff-hl-margin-mode)
+  (setq diff-hl-margin-symbols-alist
+        '((insert . "+")
+          (delete . "-")
+          (change . "M")
+          (unknown . "?")
+          (ignored . "i"))))
 
 (defun my/github-permalink ()
-  "Generate a permanent GitHub URL for the current file.
-Copies the URL to the kill ring and returns it."
+  "Generate a permanent GitHub URL for the current file.  Copies the URL to the kill ring and returns it."
   (interactive)
   (let* ((git-root (locate-dominating-file default-directory ".git"))
          (filepath (if git-root
