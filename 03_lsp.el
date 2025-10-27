@@ -29,21 +29,54 @@
   ;; (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp"))
   (add-to-list 'eglot-server-programs '(ruby-mode . ("ruby-lsp"))))
 
-;; Configure flymake and eglot indicators for terminal mode
-;; In terminal mode, use ASCII characters to avoid width issues with emoji
-;; This works in conjunction with 09_emoji.el which sets emoji width to 2
-;; for proper rendering in source files, but we want ASCII in margins
+;; ==============================================================================
+;; FIX: Auto-adjust margin width for eglot code action indicators (terminal mode)
+;; ==============================================================================
+;;
+;; PROBLEM:
+;; When running Emacs in terminal mode with emoji configured to display width 2
+;; (via char-width-table in 09_emoji.el), eglot's code action indicator (💡)
+;; causes visual alignment glitches. The lightbulb emoji is 2 characters wide,
+;; but eglot doesn't automatically resize the margin to accommodate it (unlike
+;; flymake which has auto-resize logic). This causes the indicator to overflow,
+;; pushing line numbers and code text to the right.
+;;
+;; ROOT CAUSE:
+;; - 09_emoji.el sets emoji to width-2 in char-width-table (correct for buffer content)
+;; - string-width() correctly returns 2 for the lightbulb emoji
+;; - eglot displays the indicator in the margin (when 'margin is in eglot-code-action-indications)
+;; - eglot does NOT auto-resize margins based on indicator width
+;; - Default margin width is 1, causing 2-char emoji to overflow
+;;
+;; SOLUTION:
+;; Hook into eglot-managed-mode-hook to automatically adjust left-margin-width
+;; based on the calculated string-width of the indicator. This mimics what
+;; flymake does internally with flymake-autoresize-margins.
+;;
+;; REPRODUCING FOR OTHER MODULES:
+;; If another package displays wide characters (emoji, CJK, etc.) in margins
+;; without auto-resizing, follow this pattern:
+;; 1. Identify the variable holding the indicator character(s)
+;; 2. Calculate width using (string-width indicator)
+;; 3. Set left-margin-width (or right-margin-width) to at least that width
+;; 4. Call (set-window-buffer (selected-window) (current-buffer)) to refresh
+;; 5. Hook into the appropriate mode hook to run automatically
+;;
 (when (not (display-graphic-p))
-  ;; Set flymake margin indicators to simple ASCII
-  ;; This prevents layout issues when emoji have width-2 in char-width-table
-  (setq flymake-margin-indicators-string
-        '((error "!" compilation-error)
-          (warning "!" compilation-warning)
-          (note "i" compilation-info)))
+  (defun my/auto-adjust-eglot-margin ()
+    "Automatically set margin width to accommodate emoji code action indicator.
+Eglot doesn't auto-resize margins like flymake does, so we do it manually."
+    (when (and eglot--managed-mode
+               (memq 'margin eglot-code-action-indications))
+      (let* ((indicator eglot-code-action-indicator)
+             (indicator-width (string-width indicator))
+             (required-width (max indicator-width (or left-margin-width 0))))
+        (unless (and left-margin-width (>= left-margin-width required-width))
+          (setq left-margin-width required-width)
+          ;; Force window refresh to apply the new margin width
+          (set-window-buffer (selected-window) (current-buffer))))))
 
-  ;; Set eglot code action indicator to ASCII
-  ;; Default would be 💡 emoji which causes margin spacing issues
-  (setq eglot-code-action-indicator ">"))
+  (add-hook 'eglot-managed-mode-hook #'my/auto-adjust-eglot-margin))
 
 ;; (defun my/find-compile-commands-dir ()
 ;;   "Locate the directory containing the 'compile_commands.json' file and print it."
