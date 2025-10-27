@@ -29,6 +29,22 @@
   ;; (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp"))
   (add-to-list 'eglot-server-programs '(ruby-mode . ("ruby-lsp"))))
 
+;; Configure flymake and eglot indicators for terminal mode
+;; In terminal mode, use ASCII characters to avoid width issues with emoji
+;; This works in conjunction with 09_emoji.el which sets emoji width to 2
+;; for proper rendering in source files, but we want ASCII in margins
+(when (not (display-graphic-p))
+  ;; Set flymake margin indicators to simple ASCII
+  ;; This prevents layout issues when emoji have width-2 in char-width-table
+  (setq flymake-margin-indicators-string
+        '((error "!" compilation-error)
+          (warning "!" compilation-warning)
+          (note "i" compilation-info)))
+
+  ;; Set eglot code action indicator to ASCII
+  ;; Default would be 💡 emoji which causes margin spacing issues
+  (setq eglot-code-action-indicator ">"))
+
 ;; (defun my/find-compile-commands-dir ()
 ;;   "Locate the directory containing the 'compile_commands.json' file and print it."
 ;;   (let ((project-root (locate-dominating-file default-directory "compile_commands.json")))
