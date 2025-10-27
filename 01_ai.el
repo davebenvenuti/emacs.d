@@ -1,4 +1,4 @@
-(defun env-var-to-list (var-name &optional delimiter)
+(defun my/env-var-to-list (var-name &optional delimiter)
   "Convert a delimited environment variable specified by VAR-NAME to a list of strings.
 An optional DELIMITER can be provided, defaulting to a comma."
   (let ((env-value (getenv var-name))
@@ -7,7 +7,7 @@ An optional DELIMITER can be provided, defaulting to a comma."
       ;; Split the string by the specified delimiter and trim each element
       (mapcar #'string-trim (split-string env-value delim t)))))
 
-(defun env-var-set-p (var)
+(defun my/env-var-set-p (var)
   "Return non-nil if environment variable VAR is set and not empty."
   (let ((value (getenv var)))
     (and value (not (string-empty-p value)))))
@@ -15,7 +15,7 @@ An optional DELIMITER can be provided, defaulting to a comma."
 (defun my/setup-gptel ()
   "Setup gptel for hosted deepseek or a configured OpenAI proxy."
   (interactive)
-  (when (env-var-set-p "GPTEL_DEEPSEEK_API_KEY")
+  (when (my/env-var-set-p "GPTEL_DEEPSEEK_API_KEY")
     (message "[gptel] Setting up DeepSeek")
     (setq my/deepseek-api-key (getenv "GPTEL_DEEPSEEK_API_KEY"))
 
@@ -32,7 +32,7 @@ An optional DELIMITER can be provided, defaulting to a comma."
                           :models (list "deepseek-coder" "deepseek-reasoner"))
           gptel-max-tokens 8192))
 
-  (when (env-var-set-p "GPTEL_OPENAI_PROXY_API_KEY")
+  (when (my/env-var-set-p "GPTEL_OPENAI_PROXY_API_KEY")
     (message "[gptel] Setting up OpenAI Proxy")
     (setq my/openai-api-key (getenv "GPTEL_OPENAI_PROXY_API_KEY"))
 
@@ -43,7 +43,7 @@ An optional DELIMITER can be provided, defaulting to a comma."
         :endpoint "/v1/chat/completions"
         :stream t
         :key my/openai-api-key
-        :models (env-var-to-list "GPTEL_OPENAI_PROXY_MODELS"))
+        :models (my/env-var-to-list "GPTEL_OPENAI_PROXY_MODELS"))
       gptel-max-tokens 16384)))
 
 ;; gptel notes

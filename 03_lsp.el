@@ -26,57 +26,95 @@
   ;; Configure code actions to show test run options
   (setq eglot-ignored-server-capabilities nil) ;; Make sure all capabilities are enabled
 
+  ;; Use 'mode-line' display for code actions to avoid margin conflicts with diff-hl
+  ;; This shows the lightbulb indicator in the mode-line at the bottom of the window
+  (setq eglot-code-action-indications '(eldoc-hint mode-line))
+
   ;; (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp"))
   (add-to-list 'eglot-server-programs '(ruby-mode . ("ruby-lsp"))))
 
 ;; ==============================================================================
-;; FIX: Auto-adjust margin width for eglot code action indicators (terminal mode)
+;; SOLVED: Eglot code action indicator now uses 'nearby' display
 ;; ==============================================================================
 ;;
-;; PROBLEM:
+;; ORIGINAL PROBLEM:
 ;; When running Emacs in terminal mode with emoji configured to display width 2
 ;; (via char-width-table in 09_emoji.el), eglot's code action indicator (💡)
-;; causes visual alignment glitches. The lightbulb emoji is 2 characters wide,
-;; but eglot doesn't automatically resize the margin to accommodate it (unlike
-;; flymake which has auto-resize logic). This causes the indicator to overflow,
-;; pushing line numbers and code text to the right.
+;; was causing visual alignment glitches when displayed in the margin.
 ;;
-;; ROOT CAUSE:
-;; - 09_emoji.el sets emoji to width-2 in char-width-table (correct for buffer content)
-;; - string-width() correctly returns 2 for the lightbulb emoji
-;; - eglot displays the indicator in the margin (when 'margin is in eglot-code-action-indications)
-;; - eglot does NOT auto-resize margins based on indicator width
-;; - Default margin width is 1, causing 2-char emoji to overflow
+;; ADDITIONAL PROBLEM:
+;; When diff-hl also used margins (diff-hl-margin-mode), both eglot and diff-hl
+;; competed for the same margin space on modified lines with code actions,
+;; causing display glitches even with correct margin width.
 ;;
 ;; SOLUTION:
-;; Hook into eglot-managed-mode-hook to automatically adjust left-margin-width
-;; based on the calculated string-width of the indicator. This mimics what
-;; flymake does internally with flymake-autoresize-margins.
+;; Configured eglot to use 'nearby' display mode (see :config above) instead of
+;; 'margin'. This shows the lightbulb indicator right next to the cursor where
+;; the code action is available, avoiding all margin conflicts with diff-hl.
 ;;
-;; REPRODUCING FOR OTHER MODULES:
-;; If another package displays wide characters (emoji, CJK, etc.) in margins
-;; without auto-resizing, follow this pattern:
-;; 1. Identify the variable holding the indicator character(s)
-;; 2. Calculate width using (string-width indicator)
-;; 3. Set left-margin-width (or right-margin-width) to at least that width
-;; 4. Call (set-window-buffer (selected-window) (current-buffer)) to refresh
-;; 5. Hook into the appropriate mode hook to run automatically
+;; BENEFITS:
+;; - No margin width issues with wide emoji characters
+;; - No conflicts between eglot and diff-hl on the same line
+;; - Indicator appears exactly where it's relevant (at cursor position)
+;; - diff-hl git indicators remain clearly visible in margin
 ;;
+;; ALTERNATIVE SOLUTIONS (if you want to revisit):
+;; 1. Move eglot to mode-line: (setq eglot-code-action-indications '(eldoc-hint mode-line))
+;; 2. Move diff-hl to right margin or fringes (GUI only)
+;; 3. Use ASCII indicator for eglot: (setq eglot-code-action-indicator ">")
+;;
+;; DIAGNOSTIC FUNCTION (kept for troubleshooting):
 (when (not (display-graphic-p))
-  (defun my/auto-adjust-eglot-margin ()
-    "Automatically set margin width to accommodate emoji code action indicator.
-Eglot doesn't auto-resize margins like flymake does, so we do it manually."
-    (when (and eglot--managed-mode
-               (memq 'margin eglot-code-action-indications))
-      (let* ((indicator eglot-code-action-indicator)
-             (indicator-width (string-width indicator))
-             (required-width (max indicator-width (or left-margin-width 0))))
-        (unless (and left-margin-width (>= left-margin-width required-width))
-          (setq left-margin-width required-width)
-          ;; Force window refresh to apply the new margin width
-          (set-window-buffer (selected-window) (current-buffer))))))
+  (defun my/diagnose-margin-setup ()
+    "Check current margin configuration for eglot and diff-hl."
+    (interactive)
+    (let* ((eglot-indications (and (boundp 'eglot-code-action-indications) eglot-code-action-indications))
+           (eglot-uses-margin (memq 'margin eglot-indications))
+           (diff-hl-active (and (boundp 'diff-hl-mode) diff-hl-mode))
+           (diff-hl-uses-margin (and (boundp 'diff-hl-margin-mode) diff-hl-margin-mode)))
+      (message "=== Margin Setup Check ===")
+      (message "Eglot code action indications: %s" eglot-indications)
+      (message "Eglot uses margin: %s (should be nil)" eglot-uses-margin)
+      (message "diff-hl-mode: %s" diff-hl-active)
+      (message "diff-hl uses margin: %s" diff-hl-uses-margin)
+      (message "Left margin width: %s" left-margin-width)
+      (message "=========================")
+      (if eglot-uses-margin
+          (message "⚠ WARNING: Eglot is still using margin! Expected 'nearby' mode.")
+        (message "✓ OK: No margin conflicts expected."))))
 
-  (add-hook 'eglot-managed-mode-hook #'my/auto-adjust-eglot-margin))
+  ;; Fix for diff-hl not showing overlays
+  (defun my/refresh-diff-hl ()
+    "Force refresh diff-hl to restore git indicators in margin.
+This is needed when something disrupts diff-hl's overlays (like margin width changes)."
+    (interactive)
+    (when (and (boundp 'diff-hl-mode) diff-hl-mode)
+      (diff-hl-mode -1)
+      (diff-hl-mode 1)
+      (message "Refreshed diff-hl mode - git indicators should reappear")))
+
+  ;; Diagnostic for diff-hl issues
+  (defun my/diagnose-diff-hl ()
+    "Diagnose why diff-hl indicators might not be showing."
+    (interactive)
+    (message "=== diff-hl Diagnostics ===")
+    (message "diff-hl-mode: %s" (and (boundp 'diff-hl-mode) diff-hl-mode))
+    (message "diff-hl-margin-mode: %s" (and (boundp 'diff-hl-margin-mode) diff-hl-margin-mode))
+    (message "Left margin width: %s" left-margin-width)
+    (message "In a git repo: %s" (vc-backend (buffer-file-name)))
+    (message "Buffer modified from git: %s" (buffer-modified-p))
+    (message "diff-hl overlays in buffer: %d"
+             (length (seq-filter (lambda (ov)
+                                   (overlay-get ov 'diff-hl))
+                                 (overlays-in (point-min) (point-max)))))
+    (message "=========================")
+    (message "Try: M-x my/refresh-diff-hl RET (to fix missing indicators)"))
+
+  ;; Diagnostic functions kept for manual troubleshooting if needed:
+  ;; - M-x my/diagnose-margin-setup  (check eglot/diff-hl margin config)
+  ;; - M-x my/diagnose-diff-hl       (check why diff-hl might not show)
+  ;; - M-x my/refresh-diff-hl        (force refresh diff-hl overlays)
+  ))
 
 ;; (defun my/find-compile-commands-dir ()
 ;;   "Locate the directory containing the 'compile_commands.json' file and print it."

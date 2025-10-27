@@ -9,6 +9,14 @@
           (change . "M")
           (unknown . "?")
           (ignored . "i")))
+
+  ;; Enable on-the-fly diff highlighting for unsaved changes
+  ;; This shows indicators for modified lines even before saving
+  (diff-hl-flydiff-mode 1)
+
+  ;; Adjust delay if you want faster/slower updates (default: 0.3 seconds)
+  ;; (setq diff-hl-flydiff-delay 0.3)
+
   ;; Example of how to customize the color scheme for diff-hl:
   ;; (custom-set-faces
   ;;  '(diff-hl-insert ((t (:foreground "green" :background "green" :box t))))
