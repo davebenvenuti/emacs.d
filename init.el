@@ -32,3 +32,4 @@
                                    config-files))
   (dolist (file (sort config-files #'string<))
     (load file)))
+(put 'upcase-region 'disabled nil)
