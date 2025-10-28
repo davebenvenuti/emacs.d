@@ -64,58 +64,6 @@
 ;; 3. Use ASCII indicator for eglot: (setq eglot-code-action-indicator ">")
 ;;
 ;; DIAGNOSTIC FUNCTION (kept for troubleshooting):
-(when (not (display-graphic-p))
-  (defun my/diagnose-margin-setup ()
-    "Check current margin configuration for eglot and diff-hl."
-    (interactive)
-    (let* ((eglot-indications (and (boundp 'eglot-code-action-indications) eglot-code-action-indications))
-           (eglot-uses-margin (memq 'margin eglot-indications))
-           (diff-hl-active (and (boundp 'diff-hl-mode) diff-hl-mode))
-           (diff-hl-uses-margin (and (boundp 'diff-hl-margin-mode) diff-hl-margin-mode)))
-      (message "=== Margin Setup Check ===")
-      (message "Eglot code action indications: %s" eglot-indications)
-      (message "Eglot uses margin: %s (should be nil)" eglot-uses-margin)
-      (message "diff-hl-mode: %s" diff-hl-active)
-      (message "diff-hl uses margin: %s" diff-hl-uses-margin)
-      (message "Left margin width: %s" left-margin-width)
-      (message "=========================")
-      (if eglot-uses-margin
-          (message "⚠ WARNING: Eglot is still using margin! Expected 'nearby' mode.")
-        (message "✓ OK: No margin conflicts expected."))))
-
-  ;; Fix for diff-hl not showing overlays
-  (defun my/refresh-diff-hl ()
-    "Force refresh diff-hl to restore git indicators in margin.
-This is needed when something disrupts diff-hl's overlays (like margin width changes)."
-    (interactive)
-    (when (and (boundp 'diff-hl-mode) diff-hl-mode)
-      (diff-hl-mode -1)
-      (diff-hl-mode 1)
-      (message "Refreshed diff-hl mode - git indicators should reappear")))
-
-  ;; Diagnostic for diff-hl issues
-  (defun my/diagnose-diff-hl ()
-    "Diagnose why diff-hl indicators might not be showing."
-    (interactive)
-    (message "=== diff-hl Diagnostics ===")
-    (message "diff-hl-mode: %s" (and (boundp 'diff-hl-mode) diff-hl-mode))
-    (message "diff-hl-margin-mode: %s" (and (boundp 'diff-hl-margin-mode) diff-hl-margin-mode))
-    (message "Left margin width: %s" left-margin-width)
-    (message "In a git repo: %s" (vc-backend (buffer-file-name)))
-    (message "Buffer modified from git: %s" (buffer-modified-p))
-    (message "diff-hl overlays in buffer: %d"
-             (length (seq-filter (lambda (ov)
-                                   (overlay-get ov 'diff-hl))
-                                 (overlays-in (point-min) (point-max)))))
-    (message "=========================")
-    (message "Try: M-x my/refresh-diff-hl RET (to fix missing indicators)"))
-
-  ;; Diagnostic functions kept for manual troubleshooting if needed:
-  ;; - M-x my/diagnose-margin-setup  (check eglot/diff-hl margin config)
-  ;; - M-x my/diagnose-diff-hl       (check why diff-hl might not show)
-  ;; - M-x my/refresh-diff-hl        (force refresh diff-hl overlays)
-  ))
-
 ;; (defun my/find-compile-commands-dir ()
 ;;   "Locate the directory containing the 'compile_commands.json' file and print it."
 ;;   (let ((project-root (locate-dominating-file default-directory "compile_commands.json")))
