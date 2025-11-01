@@ -13,7 +13,10 @@
          ("C-c a" . eglot-code-actions-at-point))
   :hook ((python-mode . eglot-ensure)
          (js-mode . eglot-ensure)
-         (ruby-mode . eglot-ensure)
+         (ruby-mode . (lambda ()
+                        (unless (executable-find "ruby-lsp")
+                          (error "ruby-lsp not found! Please run: gem install ruby-lsp"))
+                        (eglot-ensure)))
          ;; Add other modes as needed
          )
   :config
@@ -134,6 +137,6 @@
 (use-package auto-package-update
    :ensure t
    :config
-   (setq auto-package-update-delete-old-versions t
-         auto-package-update-interval 4)
-   (auto-package-update-maybe))
+  (setq auto-package-update-delete-old-versions t
+        auto-package-update-interval 4)
+  (auto-package-update-maybe))
