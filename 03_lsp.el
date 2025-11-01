@@ -30,7 +30,7 @@
   ;; This shows the lightbulb indicator in the mode-line at the bottom of the window
   (setq eglot-code-action-indications '(eldoc-hint mode-line))
 
-  ;; (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp"))
+  ;; Ensure ruby-mode uses ruby-lsp
   (add-to-list 'eglot-server-programs '(ruby-mode . ("ruby-lsp"))))
 
 ;; ==============================================================================
@@ -87,40 +87,38 @@
 ;;                 (when root
 ;;                   (setq default-directory root))))))
 
-;; (with-eval-after-load 'eglot
-;;   (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp"))
-;;   (add-to-list 'eglot-server-programs
-;;                `(c++-mode 2. ("clangd" (concat "--compile-commands-dir=" my-compile-commands-dir) "--query-driver=/**/*"))))
-
 (use-package terraform-mode
   :ensure t)
 
+;; Completely disable treesit-auto for Ruby to avoid conflicts
+;; We want to use traditional ruby-mode, not ruby-ts-mode
 (use-package treesit-auto
   :ensure t
   :custom
   (treesit-auto-install 'prompt)
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
-  ;; Use ruby-lsp not treesitter
-  (delete 'ruby treesit-auto-langs)
-  ;; Explicitly remove ruby-ts-mode from auto-mode-alist
-  (setq auto-mode-alist (delete '("\\.rb\\'" . ruby-ts-mode) auto-mode-alist))
-  (setq auto-mode-alist (delete '("Gemfile" . ruby-ts-mode) auto-mode-alist))
-  (setq auto-mode-alist (delete '("Gemfile\\.lock" . ruby-ts-mode) auto-mode-alist))
-  (setq auto-mode-alist (delete '("\\.rake\\'" . ruby-ts-mode) auto-mode-alist))
-  (setq auto-mode-alist (delete '("\\.rbi\\'" . ruby-ts-mode) auto-mode-alist))
+  ;; Remove ruby from treesit-auto languages
+  (setq treesit-auto-langs (delete 'ruby treesit-auto-langs))
 
-  (global-treesit-auto-mode)
+  ;; Remove all ruby-ts-mode associations from auto-mode-alist
+  (setq auto-mode-alist
+        (cl-remove-if (lambda (pair)
+                        (eq (cdr pair) 'ruby-ts-mode))
+                      auto-mode-alist))
 
-  ;; Make sure we use ruby-mode, not ruby-ts-mode
+  ;; Ensure we use ruby-mode for all Ruby files
   (add-to-list 'auto-mode-alist '("\\.rb\\'" . ruby-mode))
   (add-to-list 'auto-mode-alist '("\\.rake\\'" . ruby-mode))
   (add-to-list 'auto-mode-alist '("\\.rbi\\'" . ruby-mode))
   (add-to-list 'auto-mode-alist '("\\.gemspec\\'" . ruby-mode))
-  (add-to-list 'auto-mode-alist '("Gemfile" . ruby-mode))
-  (add-to-list 'auto-mode-alist '("Gemfile.lock" . ruby-mode))
-  ;; Use lsp-mode for Ruby and Terraform
-  (add-to-list 'auto-mode-alist '("\\.tf\\'" . terraform-mode)))
+  (add-to-list 'auto-mode-alist '("Gemfile\\'" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("Gemfile\\.lock\\'" . ruby-mode))
+
+  ;; Add terraform mode for .tf files
+  (add-to-list 'auto-mode-alist '("\\.tf\\'" . terraform-mode))
+
+  (global-treesit-auto-mode))
 
 ;; (use-package lsp-mode
 ;;   :bind
@@ -139,5 +137,3 @@
    (setq auto-package-update-delete-old-versions t
          auto-package-update-interval 4)
    (auto-package-update-maybe))
-
-;; See also: 06_debug.el
