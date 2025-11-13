@@ -37,6 +37,10 @@
 (use-package rust-mode
   :straight t) ;; Rust mode
 
+(use-package protobuf-mode
+  :straight t
+  :mode "\\.proto\\'") ;; Protocol Buffers mode
+
 (use-package bazel
   :straight (:host github :repo "bazelbuild/emacs-bazel-mode" :files ("bazel.el"))) ;; Bazel mode
 
