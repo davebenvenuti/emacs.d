@@ -41,6 +41,9 @@
   :straight t
   :mode "\\.proto\\'") ;; Protocol Buffers mode
 
+(use-package json-ts-mode
+  :mode "\\.ejson\\'") ;; JSON mode for .ejson files
+
 (use-package bazel
   :straight (:host github :repo "bazelbuild/emacs-bazel-mode" :files ("bazel.el"))) ;; Bazel mode
 
