@@ -50,50 +50,6 @@
 (use-package ag
   :straight t) ;; Silver Searcher (ag) mode
 
-(use-package company
-  :ensure t
-;;  :delight company-mode
-;;  :demand t
-  :init
-  (setq company-idle-delay 0.1
-        company-minimum-prefix-length 1)
-  :bind (:map company-active-map
-              ("C-n" . company-select-next)
-              ("C-p". company-select-previous))
-  :config
-  (defun my/company-maybe-disable-in-copilot-presence (command)
-    "Disable company when copilot has a completion available."
-    (when (and (eq command 'prefix)
-               (boundp 'copilot-mode)
-               copilot-mode
-               (copilot--overlay-visible))
-      (company-abort)))
-
-  (add-hook 'company-pre-command-hook #'my/company-maybe-disable-in-copilot-presence)
-
-  ;; Disable company-mode in specific buffers
-  (defun my/maybe-disable-company-mode ()
-    "Disable company-mode in specific buffers."
-    (when (or (string-equal (buffer-name) "*claude*")
-              (string-equal (buffer-name) "*run test results*"))
-      (company-mode -1)))
-
-  ;; Add hook to disable company in specific buffers
-  (add-hook 'buffer-list-update-hook #'my/maybe-disable-company-mode)
-
-  ;; Alternative approach - use company-global-modes to exclude specific buffers
-  ;; (setq company-global-modes
-  ;;       '(not help-mode
-  ;;             compilation-mode
-  ;;             minibuffer-inactive-mode
-  ;;             eshell-mode
-  ;;             shell-mode
-  ;;             term-mode
-  ;;             vterm-mode
-  ;;             comint-mode
-  ;;             fundamental-mode))
-
-  (global-company-mode))
 ;; Set UTF-8 as the default encoding
 (dolist (mode '(vterm-mode
                 term-mode
