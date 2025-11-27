@@ -22,6 +22,7 @@
 
 ;; Https://github.com/radian-software/straight.el/issues/1146#issuecomment-2227133737
 (setq straight-built-in-pseudo-packages '(emacs project xref eglot))
+(setq straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 
 ;; Load all *.el files in ~/.emacs.d in lexographical order.  Also note that
