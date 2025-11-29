@@ -19,10 +19,18 @@
   :init
   (vertico-mode)
   :config
-  ;; Make TAB move to next candidate
+  ;; Custom function for TAB behavior
+  (defun my/vertico-tab-or-next ()
+    "Complete if only one candidate, otherwise move to next candidate."
+    (interactive)
+    (if (= (length vertico--candidates) 1)
+        (minibuffer-complete)
+      (vertico-next)))
+  
+  ;; Make TAB use custom behavior
   ;; Unbind any existing TAB bindings that might interfere
   (keymap-unset vertico-map "TAB")
-  (keymap-set vertico-map "TAB" #'vertico-next)
+  (keymap-set vertico-map "TAB" #'my/vertico-tab-or-next)
   ;; Optionally, you can also bind S-TAB to move to previous candidate
   (keymap-set vertico-map "<backtab>" #'vertico-previous))
 
