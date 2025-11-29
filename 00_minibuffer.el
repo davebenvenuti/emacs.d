@@ -2,13 +2,34 @@
 
 ;; Enable Vertico.
 (use-package vertico
+  :config
+  (require 'vertico-buffer)
+  (require 'vertico-directory)
+  (require 'vertico-flat)
+  (require 'vertico-indexed)
+  (require 'vertico-mouse)
+  (require 'vertico-quick)
+  (require 'vertico-repeat)
+  (require 'vertico-reverse)
   :custom
   (vertico-scroll-margin 0) ;; Different scroll margin
   (vertico-count 10) ;; Show more candidates
   (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
   (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
   :init
-  (vertico-mode))
+  (vertico-mode)
+  :config
+  ;; Make TAB move to next candidate
+  ;; Unbind any existing TAB bindings that might interfere
+  (keymap-unset vertico-map "TAB")
+  (keymap-set vertico-map "TAB" #'vertico-next)
+  ;; Optionally, you can also bind S-TAB to move to previous candidate
+  (keymap-set vertico-map "<backtab>" #'vertico-previous))
+
+(use-package vertico-directory
+  :straight nil
+  :ensure nil
+  :after vertico)
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
@@ -42,33 +63,18 @@
   (completion-category-defaults nil) ;; Disable defaults, use our settings
   (completion-pcm-leading-wildcard t)) ;; Emacs 31: partial-completion behaves like substring
 
-;; Option 1: Additional bindings
-(keymap-set vertico-map "?" #'minibuffer-completion-help)
-(keymap-set vertico-map "M-RET" #'minibuffer-force-complete-and-exit)
-(keymap-set vertico-map "M-TAB" #'minibuffer-complete)
+;; Enable rich annotations using the Marginalia package
+(use-package marginalia
+  ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
+  ;; available in the *Completions* buffer, add it to the
+  ;; `completion-list-mode-map'.
+  :bind (:map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
 
-;; (straight-use-package '( vertico :files (:defaults "extensions/*")
-;;                          :includes (vertico-buffer
-;;                                     vertico-directory
-;;                                     vertico-flat
-;;                                     vertico-indexed
-;;                                     vertico-mouse
-;;                                     vertico-quick
-;;                                     vertico-repeat
-;;                                     vertico-reverse)))
+  ;; The :init section is always executed.
+  :init
 
-;; Option 2: Replace `vertico-insert' to enable TAB prefix expansion.
-;; (keymap-set vertico-map "TAB" #'minibuffer-complete)
-
-;; Configure directory extension.
-(use-package vertico-directory
-  :straight nil ;; necessary because vertico-directory is part of vertico
-  :after vertico
-  :ensure nil
-  ;; More convenient directory navigation commands
-  :bind (:map vertico-map
-              ("RET" . vertico-directory-enter)
-              ("DEL" . vertico-directory-delete-char)
-              ("M-DEL" . vertico-directory-delete-word))
-  ;; Tidy shadowed file names
-  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+  ;; Marginalia must be activated in the :init section of use-package such that
+  ;; the mode gets enabled right away. Note that this forces loading the
+  ;; package.
+  (marginalia-mode))
