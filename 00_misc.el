@@ -26,29 +26,15 @@
                 (display-line-numbers-mode 0))))))))
   (global-set-key (kbd "C-c v") 'my/toggle-vterm-window))
 
-(use-package minimap
-  :straight t) ;; minimap (VSCode-like overview)
-
-(use-package kotlin-mode
-  :ensure t    ;; Install the package if not already installed
-  :defer t     ;; Defer loading until needed
-  :mode "\\.kt\\'")
-
-(use-package rust-mode
-  :straight t) ;; Rust mode
-
-(use-package protobuf-mode
-  :straight t
-  :mode "\\.proto\\'") ;; Protocol Buffers mode
-
-(use-package json-ts-mode
-  :mode "\\.ejson\\'") ;; JSON mode for .ejson files
-
-(use-package bazel
-  :straight (:host github :repo "bazelbuild/emacs-bazel-mode" :files ("bazel.el"))) ;; Bazel mode
-
 (use-package ag
   :straight t) ;; Silver Searcher (ag) mode
+
+(use-package auto-package-update
+   :ensure t
+   :config
+   (setq auto-package-update-delete-old-versions t
+         auto-package-update-interval 4)
+   (auto-package-update-maybe))
 
 ;; Set UTF-8 as the default encoding
 (dolist (mode '(vterm-mode
