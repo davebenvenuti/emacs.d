@@ -15,3 +15,6 @@
 
 (use-package terraform-mode
   :ensure t)
+
+(use-package nix-mode
+  :mode "\\.nix\\'")
