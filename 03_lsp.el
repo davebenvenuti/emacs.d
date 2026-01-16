@@ -5,6 +5,8 @@
   (exec-path-from-shell-copy-env "GEM_PATH")
   (exec-path-from-shell-copy-env "RUBY_VERSION"))
 
+
+
 (use-package eglot
   :ensure nil  ;; Use built-in version
   :commands eglot
@@ -13,7 +15,7 @@
          ("C-c a" . eglot-code-actions-at-point))
   :hook ((python-mode . eglot-ensure)
          (js-mode . eglot-ensure)
-         (ruby-mode . eglot-ensure)
+         ;; (ruby-mode . eglot-ensure) ruby-lsp keeps crashing on me
          ;; Add other modes as needed
          )
   :config
