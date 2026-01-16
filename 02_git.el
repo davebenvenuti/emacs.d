@@ -65,3 +65,12 @@
     permalink))
 
 (global-set-key (kbd "C-c g") 'my/github-permalink)
+
+(use-package smerge-mode
+  :hook (magit-diff-mode . smerge-mode) ; Activates smerge-mode in Magit diff buffers
+  :bind (("C-c ^ m" . smerge-use-mine) ; Example keybinding to keep "ours" (HEAD)
+         ("C-c ^ o" . smerge-use-other) ; Example keybinding to keep "theirs" (incoming)
+         ("C-c ^ n" . smerge-next-conflict)) ; Example keybinding to next conflict
+  :config
+  (smerge-set-key-bindings) ; Sets up standard smerge keys within the mode
+  (setq smerge-mode-hook #'(lambda () (message "Smerge mode activated for conflicts!"))))
